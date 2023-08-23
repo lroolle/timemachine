@@ -1,0 +1,11 @@
+name = "chatgpt-timemachine-plugin"
+main = "src/index.ts"
+compatibility_date = "2023-07-24"
+workers_dev = true
+
+[env.production]
+route = "time.promptspellsmith.com/*"
+kv_namespaces = [
+  { "binding" = "timemachine", "id" = "3720f02ef32248bcbfa15ee6bffffece" },
+]
+analytics_engine_datasets = [{ "binding" = "timemachine_logs" }]
