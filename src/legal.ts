@@ -45,9 +45,10 @@ export const legalHTML = (): string => `
     <h2>Cookie Policy</h2>
     <p>The TimeMachine ChatGPT Plugin does not use cookies.</p>
     <h2>Open Source</h2>
-    <p>This project is open source and licensed under the Apache 2.0 License. You can view the source code, contribute, or report issues and feature requests on GitHub.</p>
+    <p>This project is open source and licensed under the Apache 2.0 License. You can view the source code, contribute, or
+      <a href="https://github.com/lroolle/timemachine/issues">report issues and feature requests</a> on GitHub.</p>
     <p>If you find the project useful, please consider supporting it by giving it a star on GitHub:
-    <a class="github-button" href="https://github.com/lroolle/timemachine" data-show-count="true" aria-label="Star lroolle/timemachine on GitHub">Star</a>
+      <a class="github-button" href="https://github.com/lroolle/timemachine" data-show-count="true" aria-label="Star lroolle/timemachine on GitHub">Star</a>
     </p>
     <h2>Contact</h2>
     <p>If you have any questions or concerns about our legal policies, please contact at <a href="mailto:${CONTACT_ME}">${CONTACT_ME}</a>.</p>

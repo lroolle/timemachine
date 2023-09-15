@@ -50,7 +50,7 @@ const withLogging = async (request, env) => {
   const openaiConversationId = request.headers.get('openai-conversation-id')
   const openaiEphemeralUserId = request.headers.get('openai-ephemeral-user-id')
   const openaiSubdivisionCode = request.headers.get(
-    'openai-subdivision-1-iso-code'
+    'openai-subdivision-1-iso-code',
   )
 
   // Extract properties from request.cf
@@ -95,7 +95,7 @@ const withLogging = async (request, env) => {
 
 router.original.get(
   '/legal',
-  () => new Response(legalHTML(), { headers: { 'content-type': 'text/html' } })
+  () => new Response(legalHTML(), { headers: { 'content-type': 'text/html' } }),
 )
 
 router
@@ -108,7 +108,7 @@ export default {
   async fetch(
     request: Request,
     env: Env,
-    ctx: ExecutionContext
+    ctx: ExecutionContext,
   ): Promise<Response> {
     return router.handle(request, env, ctx)
   },
