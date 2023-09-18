@@ -7,13 +7,15 @@
     "start": "wrangler dev"
   },
   "dependencies": {
-    "@cloudflare/itty-router-openapi": "^0.1.2",
-    "luxon": "^3.3.0",
-		"itty-router": "^4.0.14"
+    "@cloudflare/itty-router-openapi": "^0.1.11",
+    "@cloudflare/workers-types": "^4.20230914.0",
+    "itty-router": "^4.0.23",
+    "luxon": "^3.4.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20230404.0",
-		"typescript": "^5.0.4",
-    "wrangler": "^3.0.0"
+    "@cloudflare/workers-types": "^4.20230914.0",
+    "@types/luxon": "^3.3.2",
+    "typescript": "^5.2.2",
+    "wrangler": "^3.8.0"
   }
 }

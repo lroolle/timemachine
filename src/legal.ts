@@ -1,4 +1,4 @@
-export const CONTACT_ME: string = 'hello@promptspellsmith.com'
+export const CONTACT_ME: string = 'hello@promptspellsmith.com';
 
 export const legalHTML = (): string => `
 <!DOCTYPE html>
@@ -40,8 +40,8 @@ export const legalHTML = (): string => `
     <p>The developer reserves the right to suspend or terminate access to the service for any user who violates these terms.</p>
     <h2>Privacy Policy</h2>
     <p>The TimeMachine ChatGPT Plugin does not collect, store, or share any personal data for purposes other than its primary function.</p>
-    <p>For analytics and performance monitoring, certain non-personal data (such as request timestamps and headers) is stored in
-    Cloudflare's Analytics Engine for a duration of three months. After this period, the data is automatically deleted and is not used for any other purpose.</p>
+    <p>Backup Feature: Conversations backed up using the TimeMachine are stored temporarily and are automatically deleted after 1 month of inactivity. We prioritize user privacy and data security, and we do not guarantee complete privacy. Users are advised not to backup sensitive content.</p>
+    <p>For analytics and performance monitoring, certain non-personal data (such as request timestamps and headers) is stored in Cloudflare's Analytics Engine for a duration of three months. After this period, the data is automatically deleted and is not used for any other purpose.</p>
     <h2>Cookie Policy</h2>
     <p>The TimeMachine ChatGPT Plugin does not use cookies.</p>
     <h2>Open Source</h2>
@@ -54,4 +54,4 @@ export const legalHTML = (): string => `
     <p>If you have any questions or concerns about our legal policies, please contact at <a href="mailto:${CONTACT_ME}">${CONTACT_ME}</a>.</p>
 </body>
 </html>
-`
+`;

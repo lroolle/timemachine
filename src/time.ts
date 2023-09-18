@@ -1,5 +1,6 @@
-import { OpenAPIRoute, Query } from '@cloudflare/itty-router-openapi'
-import { DateTime } from 'luxon'
+import { OpenAPIRoute, Query } from '@cloudflare/itty-router-openapi';
+import { DateTime } from 'luxon';
+import { Env } from '../worker-configuration';
 
 export class GetTime extends OpenAPIRoute {
   static schema = {
@@ -29,89 +30,74 @@ export class GetTime extends OpenAPIRoute {
         },
       },
     },
-  }
+  };
 
   async handle(
     request: Request,
-    env: any,
-    ctx: any,
-    data: Record<string, any>
-  ): Promise<{ now: string; format: string; tz: string; errmsg: string }> {
-    const isoCode = request.headers.get('openai-subdivision-1-iso-code')
-    const cfTz = request.cf?.timezone
-    const { searchParams } = new URL(request.url)
+    env: Env,
+    ctx: ExecutionContext,
+    data: Record<string, any>,
+  ): Promise<{ now: string | null; format: string; tz: string; errmsg: string }> {
+    const isoCode = request.headers.get('openai-subdivision-1-iso-code');
+    const cfTz: string = request.cf?.timezone;
+    const { searchParams } = new URL(request.url);
 
-    const { tz, errmsg: tzErrmsg } = this.determineTimezone(
-      searchParams.get('tz'),
-      isoCode,
-      cfTz
-    )
-    const {
-      formatted_now,
-      format,
-      errmsg: formatErrmsg,
-    } = this.formatTime(searchParams.get('format'), tz)
+    const { tz, errmsg: tzErrmsg } = this.determineTimezone(searchParams.get('tz'), isoCode, cfTz);
+    const { formatted_now, format, errmsg: formatErrmsg } = this.formatTime(searchParams.get('format'), tz);
 
     return {
       now: formatted_now,
       format: format,
       tz: tz,
       errmsg: `${tzErrmsg} ${formatErrmsg}`.trim(),
-    }
+    };
   }
 
-  private determineTimezone(
-    tzParam: string | null,
-    isoCode: string | null,
-    cfTz: string | null
-  ): { tz: string; errmsg: string } {
+  private determineTimezone(tzParam: string | null, isoCode: string | null, cfTz: string | null): { tz: string; errmsg: string } {
     if (tzParam) {
-      const dt = DateTime.now().setZone(tzParam)
-      if (dt.isValid) return { tz: tzParam, errmsg: '' }
+      const dt = DateTime.now().setZone(tzParam);
+      if (dt.isValid) return { tz: tzParam, errmsg: '' };
 
-      return { tz: 'UTC', errmsg: `Invalid timezone: "${tzParam}".` }
+      return { tz: 'UTC', errmsg: `Invalid timezone: "${tzParam}".` };
     }
 
     if (isoCode) {
       return {
         tz: 'UTC',
         errmsg: `The response is defaulting to: "UTC". Please attempt to determine the appropriate timezone using the user's ISO code: "${isoCode}" and then return the correct local time.`,
-      }
+      };
     }
 
     if (cfTz) {
       return {
         tz: cfTz,
         errmsg: `Using the user's Cloudflare timezone: "${cfTz}".`,
-      }
+      };
     }
 
-    return { tz: 'UTC', errmsg: 'The response is defaulting to: "UTC".' }
+    return { tz: 'UTC', errmsg: 'The response is defaulting to: "UTC".' };
   }
 
-  private formatTime(
-    formatParam: string | null,
-    tz: string
-  ): { formatted_now: string; format: string; errmsg: string } {
-    const now = DateTime.now().setZone(tz)
-    let format = formatParam || 'iso8601'
-    let formatted_now
+  private formatTime(formatParam: string | null, tz: string): { formatted_now: string | null; format: string; errmsg: string } {
+    const now = DateTime.now().setZone(tz);
+    let format = formatParam || 'iso8601';
+    let formatted_now;
 
     try {
       switch (format) {
         case 'iso8601':
-          formatted_now = now.toISO()
-          break
+          formatted_now = now.toISO();
+          break;
         default:
-          formatted_now = now.toFormat(format)
+          formatted_now = now.toFormat(format);
       }
-      return { formatted_now, format, errmsg: '' }
+      return { formatted_now, format, errmsg: '' };
     } catch (error) {
       return {
         formatted_now: now.toISO(),
         format: 'iso8601',
         errmsg: `Invalid format: "${format}", the response is defaulting to: "iso8601".`,
-      }
+      };
     }
   }
 }

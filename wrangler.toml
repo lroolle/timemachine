@@ -1,11 +1,24 @@
 name = "chatgpt-timemachine-plugin"
 main = "src/index.ts"
 compatibility_date = "2023-07-24"
-workers_dev = true
+workers_dev = false
+
+
+kv_namespaces = [
+  { binding = "TIMEMACHINE_KV", id = "0ced1ebf96c340b088286ccab235b4f3", preview_id = "b61f5122d23447028f6aab1bb86dbe2e" },
+]
+
+
+[env.staging]
+route = "time.staging.promptspellsmith.com/*"
+kv_namespaces = [
+  { binding = "TIMEMACHINE_KV", id = "d899821999ad4c5f9ab28b0fc3a0d0f8" },
+]
+analytics_engine_datasets = [{ "binding" = "TIMEMACHINE_LOGS" }]
 
 [env.production]
 route = "time.promptspellsmith.com/*"
 kv_namespaces = [
-  { "binding" = "timemachine", "id" = "3720f02ef32248bcbfa15ee6bffffece" },
+  { binding = "TIMEMACHINE_KV", id = "4ea67b9c3d904c3f9931637ea992ae57" },
 ]
-analytics_engine_datasets = [{ "binding" = "timemachine_logs" }]
+analytics_engine_datasets = [{ "binding" = "TIMEMACHINE_LOGS" }]

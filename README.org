@@ -15,6 +15,22 @@ it is very important that you get this right.
 #+end_ai
 
 
+* Usage
+** GetTime
+*** Example Prompts
+1. What time is it now in Japan?
+2. I have a meeting with my international colleague at 9:00 AM PST. Currently, I'm in Hawaii. What time should I schedule it in my calendar?
+*** Endpoints
+1. GET ~/now~
+** Backup & Restore
+*** Example Prompts
+1.
+*** Endpoints
+1. POST ~/backup~
+2. GET ~/slices~
+3. POST ~/restore~
+
+
 * Development
 ** Dev
 #+begin_src sh :exports both :wrap src sh :results raw replace
