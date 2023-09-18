@@ -262,12 +262,7 @@ export class Flush extends OpenAPIRoute {
   static schema = {
     tags: ['BackupMachine'],
     summary: 'Flush the conversation backups.',
-    requestBody: {
-      conversationId: new Str({
-        required: false,
-        description: 'ID of the conversation to flush. Defaults to the current conversation if not provided.',
-      }),
-    },
+    requestBody: {},
     responses: {
       '200': {
         description: 'Successful Response.',
@@ -281,12 +276,15 @@ export class Flush extends OpenAPIRoute {
   async handle(request: Request, env: Env, _ctx: ExecutionContext, data: Record<string, any>) {
     let conversationId;
     try {
-      conversationId = data.body.conversationId || request.headers.get('openai-conversation-id');
+      conversationId = request.headers.get('openai-conversation-id') || '';
+      if (conversationId && conversationId.length > 0) {
+        await env.TIMEMACHINE_KV.delete(conversationId);
+        console.log(`Flushed conversation: ${conversationId}`);
 
-      await env.TIMEMACHINE_KV.delete(conversationId);
-      console.log(`Flushed conversation: ${conversationId}`);
-
-      return new Response(JSON.stringify({ message: 'Ok.' }), { status: 200 });
+        return new Response(JSON.stringify({ message: 'Ok.' }), { status: 200 });
+      } else {
+        return new Response(JSON.stringify({ message: 'No openai-conversation-id found, ignore.' }), { status: 200 });
+      }
     } catch (error) {
       console.error(`Flush conversation: ${conversationId}, error: ${error}`);
       return new Response(JSON.stringify({ message: 'Internal Server Error.' }), { status: 500 });

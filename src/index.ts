@@ -69,10 +69,6 @@ const withLogging = async (request: Request, env: Env) => {
     return;
   }
 
-  for (const [key, value] of request.headers.entries()) {
-    console.log(`${key}: ${value}`);
-  }
-
   const openaiConversationId = request.headers.get('openai-conversation-id');
   const openaiEphemeralUserId = request.headers.get('openai-ephemeral-user-id');
   const openaiSubdivisionCode = request.headers.get('openai-subdivision-1-iso-code');
