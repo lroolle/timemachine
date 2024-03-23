@@ -1,4 +1,4 @@
-import { OpenAPIRoute, Str, Query } from '@cloudflare/itty-router-openapi';
+import { OpenAPIRoute, Str, Query, Int } from '@cloudflare/itty-router-openapi';
 import { Env } from '../worker-configuration';
 import { previewContent, matchTimestamp } from './utils';
 
@@ -44,7 +44,13 @@ async function getConversation(env: Env, conversationId: string): Promise<Conver
   }
 }
 
-async function saveConversation(env: Env, conversationId: string, index: string, content: string): Promise<SaveStatus> {
+async function saveConversation(
+  env: Env,
+  conversationId: string,
+  index: string,
+  content: string,
+  expirationTtl: number,
+): Promise<SaveStatus> {
   try {
     // Retrieve existing conversation backup from the cache
     const existingBackup: ConversationBackup | null = await getConversation(env, conversationId);
@@ -70,7 +76,8 @@ async function saveConversation(env: Env, conversationId: string, index: string,
       updatedBackup = [newEntry];
     }
 
-    await env.TIMEMACHINE_KV.put(conversationId, JSON.stringify(updatedBackup), { expirationTtl: CONVERSATION_TTL_DEFAULT });
+    const ttl = expirationTtl || CONVERSATION_TTL_DEFAULT;
+    await env.TIMEMACHINE_KV.put(conversationId, JSON.stringify(updatedBackup), { expirationTtl: ttl });
     console.log('Conversation entry added:', conversationId);
     return {
       success: true,
@@ -99,6 +106,12 @@ export class BackUp extends OpenAPIRoute {
         required: true,
         description: 'A set of keywords or key points for referencing or searching the backup content.',
       }),
+      expirationTtl: new Int({
+        required: false,
+        default: CONVERSATION_TTL_DEFAULT,
+        description:
+          'Custom expiration time for the backup in seconds number. If not provided, the default expiration 1 month in seconds will be used.',
+      }),
     },
     responses: {
       '200': {
@@ -123,7 +136,8 @@ export class BackUp extends OpenAPIRoute {
 
       const index = data.body.index;
       const content = data.body.content;
-      const status: SaveStatus = await saveConversation(env, conversationId, index, content);
+      const expirationTtl = data.body.expirationTtl || CONVERSATION_TTL_DEFAULT;
+      const status: SaveStatus = await saveConversation(env, conversationId, index, content, expirationTtl);
 
       return new Response(JSON.stringify(status), { status: status.success ? 200 : 500 });
     } catch (error) {

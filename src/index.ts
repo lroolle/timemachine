@@ -32,6 +32,12 @@ export const router = OpenAPIRouter({
         'TimeMachine delivers accurate current time data across multiple timezones, in addition to offering backup and restore functionalities for conversations.',
       version: 'v2.0.1',
     },
+    servers: [
+      {
+        url: 'https://time.promptspellsmith.com',
+        description: 'TimeMachine production api.',
+      },
+    ],
   },
   aiPlugin: {
     name_for_human: 'TimeMachine',
@@ -57,6 +63,7 @@ const withAuthorization = async (request: Request, env: Env) => {
     return;
   }
   const authHeader = request.headers.get('Authorization');
+  // console.log(authHeader);
   if (!authHeader || authHeader !== `Bearer ${env.ACCESS_TOKEN}`) {
     return new Response('Unauthorized', { status: 401 });
   }
@@ -64,6 +71,12 @@ const withAuthorization = async (request: Request, env: Env) => {
 
 // Middleware to log request
 const withLogging = async (request: Request, env: Env) => {
+  // Extract properties from request.headers
+  // for (const [key, value] of request.headers.entries()) {
+  //   console.log(`DEBUG request.headers.${key}: ${value}`);
+  // }
+  // console.log('DEBUG request.cf: ', request.cf)
+
   if (env.DEBUG === 'true') {
     console.log('Ignoring logging, DEBUG: ', env.DEBUG);
     return;
@@ -72,6 +85,7 @@ const withLogging = async (request: Request, env: Env) => {
   const openaiConversationId = request.headers.get('openai-conversation-id');
   const openaiEphemeralUserId = request.headers.get('openai-ephemeral-user-id');
   const openaiSubdivisionCode = request.headers.get('openai-subdivision-1-iso-code');
+  const openaiGPTId = request.headers.get('openai-gpt-id');
 
   // Extract properties from request.cf
   const {
@@ -106,6 +120,7 @@ const withLogging = async (request: Request, env: Env) => {
       colo,
       isEUCountry,
       continent,
+      openaiGPTId,
     ],
     doubles: [asn, latitude, longitude, metroCode, postalCode],
     indexes: [],
