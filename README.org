@@ -5,7 +5,7 @@
 
 Time is an illusion, especially for ChatGPT.
 
-* ChatGTP Plugin Deprecated
+* ChatGPT Plugin Deprecated
 
 Use the GPTs version of Time Machine in ChatGPT: https://chat.openai.com/g/g-AB0m1GZK0-time-machine
 
